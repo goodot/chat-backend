@@ -3,15 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ChatData.Models.Entities
+namespace ChatAPI.Data.Models.Entities
 {
-    public class ChatMessage
+    public class User
     {
         public int Id { get; set; }
-        public int SenderId { get; set; }
+        public string Username { get; set; }
+        public bool IsActive { get; set; }
         public int RoomId { get; set; }
-        public string Text { get; set; }
-        public string Passcode { get; set; }
         public DateTime CreatedAt { get; set; }
     }
 }
