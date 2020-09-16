@@ -8,8 +8,8 @@ namespace ChatAPI.Data.Models
 		public ChatDbContext(DbContextOptions<ChatDbContext> options): base(options)
 		{
 		}
-		DbSet<ChatMessage> Messages { get; set; }
-		DbSet<User> Users { get; set; }
-		DbSet<Room> Rooms { get; set; } 
+		public DbSet<ChatMessage> Messages { get; set; }
+		public DbSet<User> Users { get; set; }
+		public DbSet<Room> Rooms { get; set; } 
 	}
 }

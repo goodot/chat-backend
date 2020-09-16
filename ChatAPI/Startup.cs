@@ -29,9 +29,10 @@ namespace ChatAPI
             {
                 opt.UseSqlServer(Configuration.GetConnectionString("ChatDb"));
             });
+            services.AddScoped<ChatDbContext>();
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory, IServiceProvider serviceProvider)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory, IServiceProvider serviceProvider, ChatDbContext context)
         {
             if (env.IsDevelopment())
             {
@@ -51,7 +52,10 @@ namespace ChatAPI
             app.UseCors();
             app.UseWebSockets();
             app.UseWebSocketServer();
+            context.Users.Add(new Data.Models.Entities.User { IsActive = true, CreatedAt = DateTime.Now, RoomId = 2, Username = "test1" });
+            context.SaveChanges();
 
         }
+        
     }
 }
