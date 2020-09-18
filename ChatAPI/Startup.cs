@@ -1,3 +1,4 @@
+using ChatAPI.Data;
 using ChatAPI.Data.Models;
 using ChatAPI.Middleware.Extension;
 using ChatAPI.Models;
@@ -26,7 +27,7 @@ namespace ChatAPI
             services.AddControllers();
             services.AddCors();
             services.AddWebSocketConnectionManager();
-            var server = "chatdb";
+            var server = "localhost";
             var port = "1433";
             var user = "SA";
             var password = "Pa55w0rd2019";

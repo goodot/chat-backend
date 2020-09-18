@@ -1,4 +1,5 @@
-﻿using ChatAPI.Data.Models;
+﻿//using ChatAPI.Data.Models;
+using ChatAPI.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
