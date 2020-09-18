@@ -15,6 +15,7 @@ namespace ChatAPI.Data.Models
         public int CreatorId { get; set; }
         public bool? IsActive { get; set; }
         public string PassCode { get; set; }
+        public string Identity { get; set; }
         public DateTime? CreatedAt { get; set; }
 
         public virtual User Creator { get; set; }
