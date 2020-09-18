@@ -10,7 +10,6 @@ WORKDIR /src
 COPY ["ChatAPI/ChatAPI.csproj", "ChatAPI/"]
 COPY ["ChatAPI.data/ChatAPI.Data.csproj", "ChatAPI.data/"]
 RUN dotnet restore "ChatAPI/ChatAPI.csproj"
-CMD dotnet migrate
 COPY . .
 WORKDIR "/src/ChatAPI"
 RUN dotnet build "ChatAPI.csproj" -c Release -o /app/build

@@ -1,5 +1,6 @@
 using ChatAPI.Data.Models;
 using ChatAPI.Middleware.Extension;
+using ChatAPI.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -25,19 +26,28 @@ namespace ChatAPI
             services.AddControllers();
             services.AddCors();
             services.AddWebSocketConnectionManager();
+            var server = "chatdb";
+            var port = "1433";
+            var user = "SA";
+            var password = "Pa55w0rd2019";
+            var database = "ChatDb";
+
+            var connectionString = $"Server={server},{port};Initial Catalog={database};User ID={user};Password={password}";
             services.AddDbContext<ChatDbContext>(opt =>
             {
-                opt.UseSqlServer(Configuration.GetConnectionString("ChatDb"));
+                opt.UseSqlServer(connectionString);
             });
             services.AddScoped<ChatDbContext>();
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory, IServiceProvider serviceProvider, ChatDbContext context)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory, IServiceProvider serviceProvider)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
+            app.MigrateDatabase();
+
 
             app.UseHttpsRedirection();
 
@@ -52,8 +62,6 @@ namespace ChatAPI
             app.UseCors();
             app.UseWebSockets();
             app.UseWebSocketServer();
-            context.Users.Add(new Data.Models.Entities.User { IsActive = true, CreatedAt = DateTime.Now, RoomId = 2, Username = "test1" });
-            context.SaveChanges();
 
         }
         
