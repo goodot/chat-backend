@@ -18,6 +18,11 @@ namespace ChatAPI.Models
             {
                 var context = serviceScope.ServiceProvider.GetService<ChatDbContext>();
                 context.Database.Migrate();
+                context.Users.Add(new Data.Models.User
+                {
+                    Username = "goodot"
+                });
+                context.SaveChanges();
             }
         }
     }

@@ -4,7 +4,7 @@ services:
     chatdb:
         image: "mcr.microsoft.com/mssql/server"
         environment:
-            SA_PASSWORD: "Pa55w0rd2019"
+            SA_PASSWORD: "Pa55w0rd2020"
             ACCEPT_EULA: "Y"
     chatapi:
         image: ${DOCKER_REGISTRY-}chatapi

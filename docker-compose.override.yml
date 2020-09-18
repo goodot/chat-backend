@@ -11,17 +11,18 @@ services:
       chatapi:
             environment:
                  - ASPNETCORE_ENVIRONMENT=Development
-
+                 - ASPNETCORE_URLS=https://+:443;http://+:80
+                 - "ConnectionStrings:ChatDb=Server=chatdb;Database=ChatDb;User Id=SA;Password=Pa55w0rd2020"
 
             depends_on:
                 - chatdb
 
             volumes:
-                - ${HOME}/.microsoft/usersecrets:/root/.microsoft/usersecrets
-                - ${HOME}/.aspnet/https:/root/.aspnet/https/
+                - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+                - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
                 
             ports:
-                - "8000:80"
+                - "8001:443"
             
 
       
