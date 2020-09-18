@@ -1,3 +1,4 @@
+using AutoMapper;
 using ChatAPI.Data;
 using ChatAPI.Data.Models;
 using ChatAPI.Middleware.Extension;
@@ -27,13 +28,8 @@ namespace ChatAPI
             services.AddControllers();
             services.AddCors();
             services.AddWebSocketConnectionManager();
-            //var server = "localhost";
-            //var port = "1433";
-            //var user = "SA";
-            //var password = "Pa55w0rd2019";
-            //var database = "ChatDb";
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-            //var connectionString = $"Server={server},{port};Initial Catalog={database};User ID={user};Password={password}";
             var connectionString = Configuration.GetConnectionString("ChatDb");
             Console.WriteLine($"Connection String: ({connectionString})");
             services.AddDbContext<ChatDbContext>(opt =>
