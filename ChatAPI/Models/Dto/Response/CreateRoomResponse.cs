@@ -7,5 +7,6 @@ namespace ChatAPI.Models.Dto.Response
 {
     public class CreateRoomResponse
     {
+
     }
 }

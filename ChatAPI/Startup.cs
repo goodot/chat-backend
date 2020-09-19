@@ -1,6 +1,9 @@
 using AutoMapper;
 using ChatAPI.Data;
 using ChatAPI.Data.Models;
+using ChatAPI.Domain.Repository;
+using ChatAPI.Domain.Repository.Interfaces;
+using ChatAPI.Extensions;
 using ChatAPI.Middleware.Extension;
 using ChatAPI.Models;
 using Microsoft.AspNetCore.Builder;
@@ -36,6 +39,9 @@ namespace ChatAPI
             {
                 opt.UseSqlServer(connectionString);
             });
+            services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
+            services.ConfigureJwt(Configuration);
+
             services.AddScoped<ChatDbContext>();
         }
 
@@ -61,6 +67,7 @@ namespace ChatAPI
             app.UseCors();
             app.UseWebSockets();
             app.UseWebSocketServer();
+
 
         }
         
