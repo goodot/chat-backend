@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChatAPI.Data", "ChatAPI.dat
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{222AFBB5-32A0-47CE-BE1D-ED97A7E76232}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatAPI.Domain", "..\ChatAPI.Domain\ChatAPI.Domain.csproj", "{217B4312-1221-442C-A587-3B5500D3C554}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatAPI.Domain", "..\ChatAPI.Domain\ChatAPI.Domain.csproj", "{6DEAEDB0-3718-4B69-9F19-8C0642AEB72D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,10 +29,10 @@ Global
 		{222AFBB5-32A0-47CE-BE1D-ED97A7E76232}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{222AFBB5-32A0-47CE-BE1D-ED97A7E76232}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{222AFBB5-32A0-47CE-BE1D-ED97A7E76232}.Release|Any CPU.Build.0 = Release|Any CPU
-		{217B4312-1221-442C-A587-3B5500D3C554}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{217B4312-1221-442C-A587-3B5500D3C554}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{217B4312-1221-442C-A587-3B5500D3C554}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{217B4312-1221-442C-A587-3B5500D3C554}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6DEAEDB0-3718-4B69-9F19-8C0642AEB72D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6DEAEDB0-3718-4B69-9F19-8C0642AEB72D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6DEAEDB0-3718-4B69-9F19-8C0642AEB72D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6DEAEDB0-3718-4B69-9F19-8C0642AEB72D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
