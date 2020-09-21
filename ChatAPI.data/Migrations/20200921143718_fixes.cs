@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ChatAPI.Data.Migrations
 {
-    public partial class Init : Migration
+    public partial class fixes : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -32,6 +32,7 @@ namespace ChatAPI.Data.Migrations
                     Description = table.Column<string>(nullable: true),
                     CreatorId = table.Column<int>(nullable: false),
                     IsActive = table.Column<bool>(nullable: false, defaultValueSql: "((1))"),
+                    Identity = table.Column<string>(maxLength: 50, nullable: true),
                     PassCode = table.Column<string>(maxLength: 10, nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime", nullable: true, defaultValueSql: "(getdate())")
                 },

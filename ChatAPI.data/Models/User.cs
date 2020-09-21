@@ -7,8 +7,8 @@ namespace ChatAPI.Data.Models
     {
         public User()
         {
-            Message = new HashSet<Message>();
-            Room = new HashSet<Room>();
+            Messages = new HashSet<Message>();
+            Rooms = new HashSet<Room>();
         }
 
         public int Id { get; set; }
@@ -17,7 +17,7 @@ namespace ChatAPI.Data.Models
         public int? RoomId { get; set; }
         public DateTime CreatedAt { get; set; }
 
-        public virtual ICollection<Message> Message { get; set; }
-        public virtual ICollection<Room> Room { get; set; }
+        public virtual ICollection<Message> Messages { get; set; }
+        public virtual ICollection<Room> Rooms { get; set; }
     }
 }

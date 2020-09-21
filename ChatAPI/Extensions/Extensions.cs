@@ -3,6 +3,8 @@ using ChatAPI.Data.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.Filters;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -15,6 +17,39 @@ namespace ChatAPI.Extensions
 {
     public static class Extensions
     {
+        public static void ConfigureSwagger(this IServiceCollection services)
+        {
+            services.AddMvc();
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "Chat API" });
+                c.AddSecurityDefinition("Bearer",
+                            new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+                            {
+                                In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+                                Description = "Please enter into field the word 'Bearer' following by space and JWT",
+                                Name = "Authorization",
+                                Type = Microsoft.OpenApi.Models.SecuritySchemeType.ApiKey
+                            });
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                          new OpenApiSecurityScheme
+                            {
+                                Reference = new OpenApiReference
+                                {
+                                    Type = ReferenceType.SecurityScheme,
+                                    Id = "Bearer"
+                                }
+                            },
+                            new string[] {}
+
+                    }
+                });
+                c.ExampleFilters();
+            });
+            services.AddSwaggerExamplesFromAssemblyOf<Startup>();
+        }
         public static string GenerateToken(this User user, string key, string issuer, string audience, int expires = 120)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));

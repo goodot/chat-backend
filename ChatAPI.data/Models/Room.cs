@@ -7,18 +7,18 @@ namespace ChatAPI.Data.Models
     {
         public Room()
         {
-            Message = new HashSet<Message>();
+            Messages = new HashSet<Message>();
         }
 
         public int Id { get; set; }
         public string Description { get; set; }
         public int CreatorId { get; set; }
         public bool? IsActive { get; set; }
-        public string PassCode { get; set; }
         public string Identity { get; set; }
+        public string PassCode { get; set; }
         public DateTime? CreatedAt { get; set; }
 
         public virtual User Creator { get; set; }
-        public virtual ICollection<Message> Message { get; set; }
+        public virtual ICollection<Message> Messages { get; set; }
     }
 }

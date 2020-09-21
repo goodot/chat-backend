@@ -1,6 +1,7 @@
 using AutoMapper;
 using ChatAPI.Data;
 using ChatAPI.Data.Models;
+using ChatAPI.Domain;
 using ChatAPI.Domain.Repository;
 using ChatAPI.Domain.Repository.Interfaces;
 using ChatAPI.Extensions;
@@ -32,7 +33,7 @@ namespace ChatAPI
             services.AddCors();
             services.AddWebSocketConnectionManager();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-
+            services.ConfigureSwagger();
             var connectionString = Configuration.GetConnectionString("ChatDb");
             Console.WriteLine($"Connection String: ({connectionString})");
             services.AddDbContext<ChatDbContext>(opt =>
@@ -67,7 +68,12 @@ namespace ChatAPI
             app.UseCors();
             app.UseWebSockets();
             app.UseWebSocketServer();
+            app.UseSwagger();
 
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Chat API");
+            });
 
         }
         

@@ -69,7 +69,8 @@ namespace ChatAPI.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Identity")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50);
 
                     b.Property<bool?>("IsActive")
                         .IsRequired()
@@ -122,13 +123,13 @@ namespace ChatAPI.Data.Migrations
             modelBuilder.Entity("ChatAPI.Data.Models.Message", b =>
                 {
                     b.HasOne("ChatAPI.Data.Models.Room", "Room")
-                        .WithMany("Message")
+                        .WithMany("Messages")
                         .HasForeignKey("RoomId")
                         .HasConstraintName("FK_Message_Room")
                         .IsRequired();
 
                     b.HasOne("ChatAPI.Data.Models.User", "Sender")
-                        .WithMany("Message")
+                        .WithMany("Messages")
                         .HasForeignKey("SenderId")
                         .HasConstraintName("FK_Message_User")
                         .IsRequired();
@@ -137,7 +138,7 @@ namespace ChatAPI.Data.Migrations
             modelBuilder.Entity("ChatAPI.Data.Models.Room", b =>
                 {
                     b.HasOne("ChatAPI.Data.Models.User", "Creator")
-                        .WithMany("Room")
+                        .WithMany("Rooms")
                         .HasForeignKey("CreatorId")
                         .HasConstraintName("FK_Room_User")
                         .IsRequired();

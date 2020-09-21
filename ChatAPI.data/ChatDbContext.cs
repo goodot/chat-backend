@@ -20,10 +20,16 @@ namespace ChatAPI.Data
         public virtual DbSet<Room> Rooms { get; set; }
         public virtual DbSet<User> Users { get; set; }
 
+        
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Message>(entity =>
             {
+                entity.HasIndex(e => e.RoomId);
+
+                entity.HasIndex(e => e.SenderId);
+
                 entity.Property(e => e.Body)
                     .IsRequired()
                     .HasColumnType("text");
@@ -33,24 +39,27 @@ namespace ChatAPI.Data
                     .HasDefaultValueSql("(getdate())");
 
                 entity.HasOne(d => d.Room)
-                    .WithMany(p => p.Message)
+                    .WithMany(p => p.Messages)
                     .HasForeignKey(d => d.RoomId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Message_Room");
 
                 entity.HasOne(d => d.Sender)
-                    .WithMany(p => p.Message)
+                    .WithMany(p => p.Messages)
                     .HasForeignKey(d => d.SenderId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Message_User");
             });
 
-          
             modelBuilder.Entity<Room>(entity =>
             {
+                entity.HasIndex(e => e.CreatorId);
+
                 entity.Property(e => e.CreatedAt)
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.Identity).HasMaxLength(50);
 
                 entity.Property(e => e.IsActive)
                     .IsRequired()
@@ -59,7 +68,7 @@ namespace ChatAPI.Data
                 entity.Property(e => e.PassCode).HasMaxLength(10);
 
                 entity.HasOne(d => d.Creator)
-                    .WithMany(p => p.Room)
+                    .WithMany(p => p.Rooms)
                     .HasForeignKey(d => d.CreatorId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Room_User");
@@ -79,8 +88,6 @@ namespace ChatAPI.Data
                     .IsRequired()
                     .HasMaxLength(50);
             });
-
-           
 
             OnModelCreatingPartial(modelBuilder);
         }
