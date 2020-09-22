@@ -32,7 +32,7 @@ namespace ChatAPI.Controllers
         }
         //POST api/v1/room
         [HttpPost]
-        public async Task<ActionResult<RoomDto>> CreateRoom(CreateRoomRequest request)
+        public async Task<ActionResult<CreateRoomResponse>> CreateRoom(CreateRoomRequest request)
         {
             var user = new User
             {
@@ -45,6 +45,7 @@ namespace ChatAPI.Controllers
                 issuer: _config["Jwt:Issuer"],
                 audience: _config["Jwt:Audience"]
                 );
+            await _unitOfWork.CommitAsync();
             var room = new Room
             {
                 Description = request.RoomDescription,
@@ -52,6 +53,7 @@ namespace ChatAPI.Controllers
             };
             await _unitOfWork.RoomRepository.CreateAsync(room);
             user.RoomId = room.Id;
+            _unitOfWork.UserRepository.Update(user);
             await _unitOfWork.CommitAsync();
 
             var roomDto = _mapper.Map<RoomDto>(room);
@@ -63,12 +65,14 @@ namespace ChatAPI.Controllers
             return CreatedAtRoute(nameof(GetRoomById), new { Id = room.Id }, response);
         }
         //GET api/v1/room
-        [HttpGet("{id}")]
+        [HttpGet("{id}", Name = nameof(GetRoomById))]
         [Authorize]
         public async Task<ActionResult<RoomDto>> GetRoomById(int id)
         {
             var room = await _unitOfWork.RoomRepository.GetByIdAsync(id);
-            return Ok(room);
+            if (room == null)
+                return NotFound();
+            return Ok(_mapper.Map<RoomDto>(room));
 
         }
         //GET api/v1/room/identity
@@ -77,6 +81,8 @@ namespace ChatAPI.Controllers
         public async Task<ActionResult<RoomDto>> GetRoomByIdentity(string identity)
         {
             var room = await _unitOfWork.RoomRepository.GetByIdentityAsync(identity);
+            if (room == null)
+                return NotFound();
             return Ok(room);
 
         }
