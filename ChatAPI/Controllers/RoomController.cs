@@ -86,5 +86,16 @@ namespace ChatAPI.Controllers
             return Ok(room);
 
         }
+        //DELETE api/v1/room
+        [HttpDelete]
+        [Authorize]
+        public async Task<IActionResult> CloseRoom(int id)
+        {
+            var room = await _unitOfWork.RoomRepository.GetByIdAsync(id);
+            if (room == null)
+                return NotFound();
+            await _unitOfWork.RoomRepository.CloseAsync(id);
+            return NoContent();
+        }
     }
 }

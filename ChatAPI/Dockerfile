@@ -9,6 +9,7 @@ FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
 WORKDIR /src
 COPY ["ChatAPI/ChatAPI.csproj", "ChatAPI/"]
 COPY ["ChatAPI.data/ChatAPI.Data.csproj", "ChatAPI.data/"]
+COPY ["ChatAPI.Domain/ChatAPI.Domain.csproj", "ChatAPI.Domain/"]
 RUN dotnet restore "ChatAPI/ChatAPI.csproj"
 COPY . .
 WORKDIR "/src/ChatAPI"
