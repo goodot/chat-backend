@@ -11,7 +11,7 @@ namespace ChatAPI.Domain
 {
     public class GenericRepository<T> : IRepository<T> where T : class
     {
-        private readonly ChatDbContext _dbContext;
+        protected readonly ChatDbContext _dbContext;
         protected readonly DbSet<T> _dbSet;
 
         public GenericRepository(ChatDbContext dbContext)

@@ -86,5 +86,22 @@ namespace ChatAPI.Domain.Repository
             return room;
         }
 
+        public bool HasUser(int userId, int roomId)
+        {
+            var userExists = _dbContext.Users.Any(
+                x => x.Id == userId
+                &&
+                x.RoomId == roomId);
+            return userExists;
+        }
+
+        public async Task<bool> HasUserAsync(int userId, int roomId)
+        {
+            var userExists = await _dbContext.Users.AnyAsync(
+                x => x.Id == userId
+                &&
+                x.RoomId == roomId);
+            return userExists;
+        }
     }
 }

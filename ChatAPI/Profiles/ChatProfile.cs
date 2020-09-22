@@ -13,6 +13,7 @@ namespace ChatAPI.Profiles
         public ChatProfile()
         {
             CreateMap<Room, RoomDto>();
+            CreateMap<User, UserDto>();
         }
     }
 }

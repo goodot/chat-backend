@@ -9,6 +9,7 @@ using ChatAPI.Domain.Repository.Interfaces;
 using ChatAPI.Extensions;
 using ChatAPI.Models.Dto.Request;
 using ChatAPI.Models.Dto.Response;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -44,10 +45,15 @@ namespace ChatAPI.Controllers
             }
             if (room == null)
                 return NotFound("Room not found");
+
+            //check if username is unique in the room
+            var userExists = _unitOfWork.UserRepository.GetByRoom(room.Id).Any(x=>x.Username == request.Username);
+            if (userExists)
+                return Conflict("user with this username already exists in the room");
+
             var user = new User
             {
                 Username = request.Username
-
             };
             await _unitOfWork.UserRepository.AddAsync(user);
             var userDto = _mapper.Map<UserDto>(user);
@@ -63,6 +69,7 @@ namespace ChatAPI.Controllers
             return CreatedAtAction(nameof(GetUserById), new { Id = user.Id }, response);
         }
         //GET api/v1/user
+        [Authorize]
         [HttpGet("{id}", Name = nameof(GetUserById))]
         public async Task<ActionResult<UserDto>> GetUserById(int id)
         {
@@ -71,6 +78,15 @@ namespace ChatAPI.Controllers
                 return NotFound();
             var userDto = _mapper.Map<UserDto>(user);
             return Ok(userDto);
+        }
+        //GET api/v1/user/by-room
+        [Authorize]
+        [HttpGet("{roomId}")]
+        public ActionResult<List<UserDto>> GetUsersByRoom(int roomId)
+        {
+            var users = _unitOfWork.UserRepository.GetByRoom(roomId);
+            var userDtos = _mapper.Map<List<UserDto>>(users);
+            return Ok(userDtos);
         }
     }
 }

@@ -9,12 +9,7 @@ namespace ChatAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TestController : ControllerBase
+    public class MessageController : ControllerBase
     {
-        [HttpGet]
-        public ActionResult<string> Test()
-        {
-            return Ok("test");
-        }
     }
 }

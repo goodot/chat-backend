@@ -18,6 +18,8 @@ namespace ChatAPI.Domain.Repository.Interfaces
         void Close(int id);
         Task DeleteAsync(int id);
         void Delete(int id);
+        bool HasUser(int userId, int roomId);
+        Task<bool> HasUserAsync(int userId, int roomId);
         
 
     }

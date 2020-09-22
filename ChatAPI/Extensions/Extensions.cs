@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
+using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -91,6 +92,24 @@ namespace ChatAPI.Extensions
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Jwt:Key"]))
                     };
                 });
+
+        }
+        public static int ExtractUserId(this IIdentity identity)
+        {
+            try
+            {
+                var claimsIdentity = identity as ClaimsIdentity;
+                var sid = claimsIdentity.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sid);
+                if (sid != null)
+                {
+                    return Convert.ToInt32(sid.Value);
+                }
+            }
+            catch
+            {
+                return 0;
+            }
+            return 0;
 
         }
 

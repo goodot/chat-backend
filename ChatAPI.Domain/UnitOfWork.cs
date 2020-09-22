@@ -15,12 +15,12 @@ namespace ChatAPI.Domain
         public UnitOfWork(ChatDbContext dbContext)
         {
             _dbContext = dbContext;
-            UserRepository = new GenericRepository<User>(_dbContext);
+            UserRepository = new UserRepository(_dbContext);
             MessageRepository = new GenericRepository<Message>(_dbContext);
             RoomRepository = new RoomRepository(_dbContext);
         }
         public GenericRepository<Message> MessageRepository;
-        public GenericRepository<User> UserRepository;
+        public UserRepository UserRepository;
         public RoomRepository RoomRepository;
         public void Commit()
         {
