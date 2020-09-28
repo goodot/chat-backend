@@ -28,5 +28,9 @@
     <ProjectReference Include="..\ChatAPI.data\ChatAPI.Data.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Extensions\Paging\" />
+  </ItemGroup>
+
 
 </Project>
