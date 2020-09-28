@@ -11,5 +11,6 @@ namespace ChatAPI.Controllers
     [ApiController]
     public class MessageController : ControllerBase
     {
+
     }
 }

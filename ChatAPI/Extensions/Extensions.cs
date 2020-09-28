@@ -6,13 +6,11 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Security.Principal;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace ChatAPI.Extensions
 {
@@ -112,6 +110,7 @@ namespace ChatAPI.Extensions
             return 0;
 
         }
+        
 
     }
 }
