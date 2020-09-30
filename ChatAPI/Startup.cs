@@ -44,6 +44,7 @@ namespace ChatAPI
             services.ConfigureJwt(Configuration);
 
             services.AddScoped<ChatDbContext>();
+            services.AddHttpContextAccessor();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory, IServiceProvider serviceProvider)

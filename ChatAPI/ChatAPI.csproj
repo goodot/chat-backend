@@ -8,6 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Extensions\Paging\**" />
+    <Content Remove="Extensions\Paging\**" />
+    <EmbeddedResource Remove="Extensions\Paging\**" />
+    <None Remove="Extensions\Paging\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="10.0.0" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.8" />
@@ -26,10 +33,6 @@
   <ItemGroup>
     <ProjectReference Include="..\ChatAPI.Domain\ChatAPI.Domain.csproj" />
     <ProjectReference Include="..\ChatAPI.data\ChatAPI.Data.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Extensions\Paging\" />
   </ItemGroup>
 
 
