@@ -53,7 +53,8 @@ namespace ChatAPI.Controllers
 
             var user = new User
             {
-                Username = request.Username
+                Username = request.Username,
+                RoomId = room.Id
             };
             await _unitOfWork.UserRepository.AddAsync(user);
             await _unitOfWork.CommitAsync();

@@ -8,8 +8,9 @@ namespace ChatAPI.Domain.Repository.Interfaces
 {
 	public interface IMessageRepository
 	{
-		IEnumerable<Message> GetPaged(int page, int pageSize);
+		IEnumerable<Message> GetPaged(int roomId, int page, int pageSize);
 		Task SendAsync(Message message);
 		Task<Message> GetByIdAsync(int id);
+		IEnumerable<Message> GetByRoom(int roomId);
 	}
 }

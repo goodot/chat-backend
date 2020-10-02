@@ -43,21 +43,31 @@ namespace ChatAPI.Controllers
         }
         //POST api/v1/message/send
         [HttpPost("send")]
-        public async Task<IActionResult> SendMessage(SendMessageRequest request)
+        public async Task<ActionResult<MessageDto>> SendMessage(SendMessageRequest request)
         {
             var message = _mapper.Map<Message>(request);
             message.SenderId = _userId;
             await _unitOfWork.MessageRepository.SendAsync(message);
-            return CreatedAtRoute(nameof(GetMessageById), new { Id = message.Id });
+            await _unitOfWork.CommitAsync();
+            var messageDto = _mapper.Map<MessageDto>(message);
+            return CreatedAtRoute(nameof(GetMessageById), new { Id = message.Id }, messageDto);
 
         }
         //GET api/v1/message/
-        [HttpGet("{page}/{pageSize}")]
-        public ActionResult<List<MessageDto>> GetMessages(int page, int pageSize)
+        [HttpGet("{roomId}/{page}/{pageSize}")]
+        public ActionResult<List<MessageDto>> GetMessages(int roomId, int page, int pageSize)
         {
-            var messages = _unitOfWork.MessageRepository.GetPaged(page, pageSize);
-            var messageDtos = _mapper.Map<MessageDto>(messages);
+            var messages = _unitOfWork.MessageRepository.GetPaged(roomId, page, pageSize);
+            var messageDtos = _mapper.Map<IEnumerable<MessageDto>>(messages);
             return Ok(messageDtos);
+        }
+        //GET api/v1/message/all/
+        [HttpGet("all/{roomId}")]
+        public ActionResult<IEnumerable<MessageDto>> GetMessagesByRoom(int roomId)
+        {
+            var messages = _unitOfWork.MessageRepository.GetByRoom(roomId);
+            var messagesDto = _mapper.Map<IEnumerable<MessageDto>>(messages);
+            return Ok(messagesDto);
         }
     }
 }
