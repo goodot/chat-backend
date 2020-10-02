@@ -40,12 +40,12 @@ namespace ChatAPI.Controllers
             };
             _unitOfWork.UserRepository.Add(user);
 
+            await _unitOfWork.CommitAsync();
             var token = user.GenerateToken(
                 key: _config["Jwt:Key"],
                 issuer: _config["Jwt:Issuer"],
                 audience: _config["Jwt:Audience"]
                 );
-            await _unitOfWork.CommitAsync();
             var room = new Room
             {
                 Description = request.RoomDescription,

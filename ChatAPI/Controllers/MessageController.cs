@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using AutoMapper.Configuration;
 using ChatAPI.Data.Models;
 using ChatAPI.Domain;
 using ChatAPI.Domain.Repository.Interfaces;
@@ -13,6 +12,7 @@ using ChatAPI.Models.Dto.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 
 namespace ChatAPI.Controllers
 {
@@ -50,6 +50,14 @@ namespace ChatAPI.Controllers
             await _unitOfWork.MessageRepository.SendAsync(message);
             return CreatedAtRoute(nameof(GetMessageById), new { Id = message.Id });
 
+        }
+        //GET api/v1/message/
+        [HttpGet("{page}/{pageSize}")]
+        public ActionResult<List<MessageDto>> GetMessages(int page, int pageSize)
+        {
+            var messages = _unitOfWork.MessageRepository.GetPaged(page, pageSize);
+            var messageDtos = _mapper.Map<MessageDto>(messages);
+            return Ok(messageDtos);
         }
     }
 }

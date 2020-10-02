@@ -56,6 +56,7 @@ namespace ChatAPI.Controllers
                 Username = request.Username
             };
             await _unitOfWork.UserRepository.AddAsync(user);
+            await _unitOfWork.CommitAsync();
             var userDto = _mapper.Map<UserDto>(user);
             var response = new CreateUserResponse
             {
@@ -81,7 +82,7 @@ namespace ChatAPI.Controllers
         }
         //GET api/v1/user/by-room
         [Authorize]
-        [HttpGet("{roomId}")]
+        [HttpGet("by-room/{roomId}")]
         public ActionResult<List<UserDto>> GetUsersByRoom(int roomId)
         {
             var users = _unitOfWork.UserRepository.GetByRoom(roomId);
