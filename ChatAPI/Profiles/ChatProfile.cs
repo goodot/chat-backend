@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using ChatAPI.Data.Models;
+using ChatAPI.Models;
 using ChatAPI.Models.Dto.Request;
 using ChatAPI.Models.Dto.Response;
 using System;
@@ -17,6 +18,7 @@ namespace ChatAPI.Profiles
             CreateMap<User, UserDto>().ReverseMap();
             CreateMap<Message, MessageDto>().ReverseMap();
             CreateMap<SendMessageRequest, Message>();
+            CreateMap<SocketModel, Message>().ReverseMap();
 
         }
     }

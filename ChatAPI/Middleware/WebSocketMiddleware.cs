@@ -1,7 +1,14 @@
-﻿using ChatAPI.Models;
+﻿using AutoMapper;
+using ChatAPI.Data;
+using ChatAPI.Data.Models;
+using ChatAPI.Domain;
+using ChatAPI.Domain.Repository.Interfaces;
+using ChatAPI.Models;
+using ChatAPI.Models.Socket;
 using ChatAPI.WebSockets;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -18,7 +25,8 @@ namespace ChatAPI.Middleware
     {
         private readonly RequestDelegate _next;
         private WebSocketConnectionManager _manager;
-
+        private UnitOfWork _unitOfWork;
+        private IMapper _mapper;
         public WebSocketMiddleware(RequestDelegate next, WebSocketConnectionManager manager)
         {
             _next = next;
@@ -27,10 +35,13 @@ namespace ChatAPI.Middleware
 
         public async Task InvokeAsync(HttpContext context)
         {
+            _unitOfWork = context.RequestServices.GetRequiredService<IUnitOfWork>() as UnitOfWork;
+            _mapper = context.RequestServices.GetRequiredService<IMapper>();
             if (context.WebSockets.IsWebSocketRequest)
             {
                 var socket = await context.WebSockets.AcceptWebSocketAsync();
                 var id = _manager.AddSocket(socket);
+
                 if (id != null)
                 {
                     if (socket.State == System.Net.WebSockets.WebSocketState.Open)
@@ -63,16 +74,22 @@ namespace ChatAPI.Middleware
         private async Task RouteJSONMessageAsync(string message)
         {
 
-            var routeOb = JsonConvert.DeserializeObject<SocketModel>(message);
+            var routeOb = JsonConvert.DeserializeObject<SocketRequest>(message);
             Guid guidOutput;
 
-            if (Guid.TryParse(routeOb.Room.ToString(), out guidOutput))
+            if (Guid.TryParse(routeOb.RoomId.ToString(), out guidOutput))
             {
-                var sockets = _manager.GetAll().Where(s => s.Key == routeOb.Room.ToString());
+                var sockets = _manager.GetAll().Where(s => s.Key == routeOb.RoomId.ToString());
                 foreach(var sock in sockets)
                 {
                     if (sock.Value.State == WebSocketState.Open)
-                        await sock.Value.SendAsync(Encoding.UTF8.GetBytes(routeOb.Message.ToString()), WebSocketMessageType.Text, true, CancellationToken.None);
+                    {
+                        await sock.Value.SendAsync(Encoding.UTF8.GetBytes(routeOb.Body.ToString()), WebSocketMessageType.Text, true, CancellationToken.None);
+                        var msg = _mapper.Map<Message>(routeOb);
+                        await _unitOfWork.MessageRepository.SendAsync(msg);
+                        await _unitOfWork.CommitAsync();
+                    }
+
                 }
             }
 
