@@ -52,6 +52,7 @@ namespace ChatAPI.Controllers
                 CreatorId = user.Id
             };
             await _unitOfWork.RoomRepository.CreateAsync(room);
+            await _unitOfWork.CommitAsync();
             user.RoomId = room.Id;
             _unitOfWork.UserRepository.Update(user);
             await _unitOfWork.CommitAsync();

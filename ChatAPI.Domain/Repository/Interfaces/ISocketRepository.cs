@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace ChatAPI.Domain.Repository.Interfaces
 {
-    public  interface IUserRepository
+    public interface ISocketRepository
     {
-        IEnumerable<User> GetByRoom(int roomId);
-        Task<User> GetBySocket(string socketId);
+        Task AddSocket(Socket socket);
     }
 }

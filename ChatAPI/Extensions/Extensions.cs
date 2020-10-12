@@ -1,6 +1,7 @@
 ﻿
 using ChatAPI.Data.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
@@ -141,7 +142,6 @@ namespace ChatAPI.Extensions
 				ValidAudience = config["Jwt:Audience"],
 				ValidIssuer = config["Jwt:Issuer"]
 			};
-			// Add any other validations: issuer, audience, lifetime, etc
 
 
 			var handler = new JwtSecurityTokenHandler();
@@ -159,6 +159,10 @@ namespace ChatAPI.Extensions
 				return false;
 			}
 			return true;
+		}
+		public static string Extract(this IQueryCollection query, string key)
+		{
+			return query.FirstOrDefault(x => x.Key == key).Value;
 		}
 
 
