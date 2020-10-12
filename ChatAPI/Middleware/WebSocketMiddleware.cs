@@ -34,6 +34,8 @@ namespace ChatAPI.Middleware
         private UnitOfWork _unitOfWork;
         private IMapper _mapper;
         private IConfiguration _config;
+
+        private int _userId;
         public WebSocketMiddleware(RequestDelegate next, WebSocketConnectionManager manager)
         {
             _next = next;
@@ -75,7 +77,8 @@ namespace ChatAPI.Middleware
             //check user
             try
             {
-                var user = await _unitOfWork.UserRepository.GetByIdAsync(Convert.ToInt32(userId));
+                _userId = Convert.ToInt32(userId);
+                var user = await _unitOfWork.UserRepository.GetByIdAsync(_userId);
                 if (user == null)
                 {
                     await _next(context);
@@ -99,6 +102,14 @@ namespace ChatAPI.Middleware
 
             var socket = await context.WebSockets.AcceptWebSocketAsync();
             var id = _manager.AddSocket(socket);
+
+            var dbSocket = new Socket
+            {
+                SocketId = id,
+                UserId = _userId
+            };
+            await _unitOfWork.SocketRepository.AddSocketAsync(dbSocket);
+            await _unitOfWork.CommitAsync();
 
             if (id != null)
             {

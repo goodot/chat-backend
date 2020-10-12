@@ -17,7 +17,7 @@ namespace ChatAPI.Domain.Repository
             _context = context;
         }
 
-        public async Task AddSocket(Socket socket)
+        public async Task AddSocketAsync(Socket socket)
         {
             await _context.AddAsync(socket);
         }

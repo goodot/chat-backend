@@ -8,6 +8,6 @@ namespace ChatAPI.Domain.Repository.Interfaces
 {
     public interface ISocketRepository
     {
-        Task AddSocket(Socket socket);
+        Task AddSocketAsync(Socket socket);
     }
 }
