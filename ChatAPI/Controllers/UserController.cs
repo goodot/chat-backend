@@ -90,5 +90,6 @@ namespace ChatAPI.Controllers
             var userDtos = _mapper.Map<List<UserDto>>(users);
             return Ok(userDtos);
         }
+
     }
 }

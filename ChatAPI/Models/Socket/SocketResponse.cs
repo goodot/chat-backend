@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace ChatAPI.Models.Socket
 {
-    public class SocketRequest
+    public class SocketResponse
     {
         public string SocketId { get; set; }
         public string RoomId { get; set; }
