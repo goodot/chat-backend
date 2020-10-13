@@ -34,22 +34,15 @@ namespace ChatAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<CreateUserResponse>> CreateUser(CreateUserRequest request)
         {
-            Room room;
-            if (request.RoomId != null)
-            {
-                room = await _unitOfWork.RoomRepository.GetByIdAsync(request.RoomId.Value);
-            }
-            else
-            {
-                room = await _unitOfWork.RoomRepository.GetByIdentityAsync(request.RoomIdentity);
-            }
+            var room = await _unitOfWork.RoomRepository.GetByIdentityAsync(request.RoomIdentity);
+
             if (room == null)
                 return NotFound("Room not found");
 
-            //check if username is unique in the room
-            var userExists = _unitOfWork.UserRepository.GetByRoom(room.Id).Any(x=>x.Username == request.Username);
-            if (userExists)
-                return Conflict("user with this username already exists in the room");
+            ////check if username is unique in the room
+            //var userExists = _unitOfWork.UserRepository.GetByRoom(room.Id).Any(x => x.Username == request.Username);
+            //if (userExists)
+            //    return Conflict("user with this username already exists in the room");
 
             var user = new User
             {

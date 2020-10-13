@@ -30,7 +30,6 @@ namespace ChatAPI.Middleware
         private readonly RequestDelegate _next;
         private WebSocketConnectionManager _manager;
         private UnitOfWork _unitOfWork;
-        private IMapper _mapper;
         private IConfiguration _config;
 
 
@@ -44,7 +43,6 @@ namespace ChatAPI.Middleware
         public async Task InvokeAsync(HttpContext context)
         {
             _unitOfWork = context.RequestServices.GetRequiredService<IUnitOfWork>() as UnitOfWork;
-            _mapper = context.RequestServices.GetRequiredService<IMapper>();
             _config = context.RequestServices.GetRequiredService<IConfiguration>();
 
 
