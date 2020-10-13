@@ -26,8 +26,6 @@ namespace ChatAPI.Middleware
     public class WebSocketMiddleware
     {
         private const string Token = "token";
-        private const string RoomId = "roomId";
-        private const string UserId = "userId";
 
         private readonly RequestDelegate _next;
         private WebSocketConnectionManager _manager;
@@ -35,7 +33,7 @@ namespace ChatAPI.Middleware
         private IMapper _mapper;
         private IConfiguration _config;
 
-        private int _userId;
+
         public WebSocketMiddleware(RequestDelegate next, WebSocketConnectionManager manager)
         {
             _next = next;
@@ -51,8 +49,6 @@ namespace ChatAPI.Middleware
 
 
             var token = context.Request.Query.Extract(Token);
-            var roomId = context.Request.Query.Extract(RoomId);
-            var userId = context.Request.Query.Extract(UserId);
 
 
 
@@ -62,42 +58,21 @@ namespace ChatAPI.Middleware
                 return;
             }
 
-            if (token == null || roomId == null || userId == null)
+            if (token == null)
             {
                 await _next(context);
                 return;
             }
 
-            if(!Extensions.Extensions.AuthenticateJwt(token, _config))
+            if (!Extensions.Extensions.AuthenticateJwt(token, _config))
             {
                 await _next(context);
                 return;
             }
 
-            //check user
-            try
-            {
-                _userId = Convert.ToInt32(userId);
-                var user = await _unitOfWork.UserRepository.GetByIdAsync(_userId);
-                if (user == null)
-                {
-                    await _next(context);
-                    return;
-                }
-            }
-            catch
-            {
-                await _next(context);
-                return;
-            }
 
-            //check room
-            var room = await _unitOfWork.RoomRepository.GetByIdentityAsync(roomId);
-            if(room == null)
-            {
-                await _next(context);
-                return;
-            }
+            var roomId = Convert.ToInt32(token.GetIdentityFromToken(_config).ExtractRoomId());
+            var userId = Convert.ToInt32(token.GetIdentityFromToken(_config).ExtractUserId());
 
 
             var socket = await context.WebSockets.AcceptWebSocketAsync();
@@ -106,7 +81,7 @@ namespace ChatAPI.Middleware
             var dbSocket = new Socket
             {
                 SocketId = id,
-                UserId = _userId
+                UserId = userId
             };
             await _unitOfWork.SocketRepository.AddSocketAsync(dbSocket);
             await _unitOfWork.CommitAsync();
@@ -122,7 +97,7 @@ namespace ChatAPI.Middleware
                 switch (result.MessageType)
                 {
                     case WebSocketMessageType.Text:
-                        await RouteJSONMessageAsync(Encoding.UTF8.GetString(buffer, 0, result.Count));
+                        await RouteJSONMessageAsync(Encoding.UTF8.GetString(buffer, 0, result.Count), roomId, userId);
                         return;
                     case WebSocketMessageType.Close:
                         var id = _manager.GetAll().FirstOrDefault(x => x.Value == socket).Key;
@@ -135,30 +110,53 @@ namespace ChatAPI.Middleware
             });
 
         }
-        private async Task RouteJSONMessageAsync(string message)
+        private async Task RouteJSONMessageAsync(string message, int roomId, int userId)
         {
             try
             {
-                var routeOb = JsonConvert.DeserializeObject<SocketRequest>(message);
-                Guid guidOutput;
-
-                if (Guid.TryParse(routeOb.RoomId.ToString(), out guidOutput))
+                #region get username
+                var user = await _unitOfWork.UserRepository.GetByIdAsync(userId);
+                if (user == null)
+                    return;
+                #endregion
+                var socketMessage = new SocketMessage
                 {
-                    var sockets = _manager.GetAll().Where(s => s.Key == routeOb.RoomId.ToString());
-                    foreach (var sock in sockets)
-                    {
-                        if (sock.Value.State == WebSocketState.Open)
-                        {
-                            await sock.Value.SendAsync(Encoding.UTF8.GetBytes(routeOb.Body.ToString()), WebSocketMessageType.Text, true, CancellationToken.None);
-                            var msg = _mapper.Map<Message>(routeOb);
-                            await _unitOfWork.MessageRepository.SendAsync(msg);
-                            await _unitOfWork.CommitAsync();
-                        }
+                    Body = message,
+                    UserId = userId,
+                    Username = user.Username
+                };
 
+                var msg = new Message
+                {
+                    RoomId = roomId,
+                    SenderId = userId,
+                    Body = message
+                };
+                msg.RoomId = roomId;
+                msg.SenderId = userId;
+                await _unitOfWork.MessageRepository.SendAsync(msg);
+                await _unitOfWork.CommitAsync();
+
+
+                var socketMessageString = JsonConvert.SerializeObject(socketMessage);
+
+                var dbSockets = await _unitOfWork.SocketRepository.GetByRoomIdAsync(roomId);
+                var sockets = _manager.GetAll().Where(s => dbSockets.Any(t => t.SocketId == s.Key));
+
+                foreach (var sock in sockets)
+                {
+                    if (sock.Value.State == WebSocketState.Open)
+                    {
+                        await sock.Value.SendAsync(Encoding.UTF8.GetBytes(socketMessageString), WebSocketMessageType.Text, true, CancellationToken.None);
                     }
+
+
                 }
             }
-            catch { }
+            catch (Exception ex)
+            {
+                //TODO log
+            }
 
 
         }

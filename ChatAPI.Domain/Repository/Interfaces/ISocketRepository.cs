@@ -9,5 +9,8 @@ namespace ChatAPI.Domain.Repository.Interfaces
     public interface ISocketRepository
     {
         Task AddSocketAsync(Socket socket);
+        Task<IEnumerable<Socket>> GetByRoomIdAsync(int id);
+        Task<IEnumerable<Socket>> GetByRoomIdentityAsync(string identity);
+
     }
 }
