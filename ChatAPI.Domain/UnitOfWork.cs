@@ -29,6 +29,7 @@ namespace ChatAPI.Domain
         public MessageRepository MessageRepository { get; }
         public IUserRepository UserRepository { get; }
         public IRoomRepository RoomRepository { get; }
+        public SocketRepository SocketRepository { get; }
         public void Commit()
         {
             _dbContext.SaveChanges();
