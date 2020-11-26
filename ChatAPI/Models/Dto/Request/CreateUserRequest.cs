@@ -9,6 +9,5 @@ namespace ChatAPI.Models.Dto.Request
     {
         public string Username { get; set; }
         public string RoomIdentity { get; set; }
-        public int? RoomId { get; set; }
     }
 }

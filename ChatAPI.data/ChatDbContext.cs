@@ -20,6 +20,8 @@ namespace ChatAPI.Data
         public virtual DbSet<Room> Rooms { get; set; }
         public virtual DbSet<User> Users { get; set; }
 
+        public virtual DbSet<Socket> Sockets { get; set; }
+
         
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -89,6 +91,16 @@ namespace ChatAPI.Data
                     .HasMaxLength(50);
             });
 
+            modelBuilder.Entity<Socket>(entity =>
+            {
+                entity.Property(e => e.CreatedAt)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.SocketId)
+                    .IsRequired()
+                    .HasMaxLength(50);
+            });
             OnModelCreatingPartial(modelBuilder);
         }
 

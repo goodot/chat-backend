@@ -41,20 +41,22 @@ namespace ChatAPI.Controllers
             await _unitOfWork.UserRepository.AddAsync(user);
             await _unitOfWork.CommitAsync();
             
-            var token = user.GenerateToken(
-                key: _config["Jwt:Key"],
-                issuer: _config["Jwt:Issuer"],
-                audience: _config["Jwt:Audience"]
-                );
             var room = new Room
             {
                 Description = request.RoomDescription,
                 CreatorId = user.Id
             };
             await _unitOfWork.RoomRepository.CreateAsync(room);
+            await _unitOfWork.CommitAsync();
             user.RoomId = room.Id;
             _unitOfWork.UserRepository.Update(user);
             await _unitOfWork.CommitAsync();
+
+            var token = user.GenerateToken(
+                key: _config["Jwt:Key"],
+                issuer: _config["Jwt:Issuer"],
+                audience: _config["Jwt:Audience"]
+                );
 
             var roomDto = _mapper.Map<RoomDto>(room);
             var response = new CreateRoomResponse
@@ -62,6 +64,7 @@ namespace ChatAPI.Controllers
                 Room = roomDto,
                 Token = token
             };
+
             return CreatedAtRoute(nameof(GetRoomById), new { Id = room.Id }, response);
         }
         //GET api/v1/room

@@ -18,6 +18,7 @@ namespace ChatAPI.Domain
             UserRepository = new UserRepository(_dbContext);
             MessageRepository = new MessageRepository(_dbContext);
             RoomRepository = new RoomRepository(_dbContext);
+            SocketRepository = new SocketRepository(_dbContext);
         }
 
         public UnitOfWork(IUserRepository userRepository, IRoomRepository roomRepository)

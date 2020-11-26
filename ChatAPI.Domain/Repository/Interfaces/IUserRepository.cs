@@ -9,5 +9,6 @@ namespace ChatAPI.Domain.Repository.Interfaces
     public  interface IUserRepository:IRepository<User>
     {
         IEnumerable<User> GetByRoom(int roomId);
+        Task<User> GetBySocket(string socketId);
     }
 }

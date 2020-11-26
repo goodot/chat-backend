@@ -1,6 +1,7 @@
 ﻿
 using ChatAPI.Data.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
@@ -82,14 +83,7 @@ namespace ChatAPI.Extensions
 				{
 					options.SaveToken = true;
 					options.RequireHttpsMetadata = false;
-					options.TokenValidationParameters = new TokenValidationParameters
-					{
-						ValidateIssuer = true,
-						ValidateAudience = true,
-						ValidIssuer = config["Jwt:Issuer"],
-						ValidAudience = config["Jwt:Audience"],
-						IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Jwt:Key"]))
-					};
+					options.TokenValidationParameters = config.GetTokenValidationParameters();
 				});
 
 		}
@@ -131,17 +125,8 @@ namespace ChatAPI.Extensions
 		}
 		public static bool AuthenticateJwt(string accessToken, IConfiguration config)
 		{
-			var secretKey = config["Jwt:Key"];
 
-			var validationParameters = new TokenValidationParameters()
-			{
-				ValidateIssuerSigningKey = true,
-				ValidateAudience = true,
-				IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secretKey)),
-				ValidAudience = config["Jwt:Audience"],
-				ValidIssuer = config["Jwt:Issuer"]
-			};
-			// Add any other validations: issuer, audience, lifetime, etc
+			var validationParameters = config.GetTokenValidationParameters();
 
 
 			var handler = new JwtSecurityTokenHandler();
@@ -159,6 +144,35 @@ namespace ChatAPI.Extensions
 				return false;
 			}
 			return true;
+		}
+		public static string Extract(this IQueryCollection query, string key)
+		{
+			return query.FirstOrDefault(x => x.Key == key).Value;
+		}
+		public static ClaimsIdentity GetIdentityFromToken(this string token, IConfiguration config)
+		{
+			var tokenDecoder = new JwtSecurityTokenHandler();
+			var jwtSecurityToken = (JwtSecurityToken)tokenDecoder.ReadToken(token);
+
+			SecurityToken validatedToken;
+
+			var principal = tokenDecoder.ValidateToken(
+				jwtSecurityToken.RawData,
+				config.GetTokenValidationParameters(),
+				out validatedToken);
+
+			return principal.Identities.FirstOrDefault();
+		}
+		private static TokenValidationParameters GetTokenValidationParameters(this Microsoft.Extensions.Configuration.IConfiguration config)
+        {
+			return new TokenValidationParameters
+			{
+				ValidateIssuer = true,
+				ValidateAudience = true,
+				ValidIssuer = config["Jwt:Issuer"],
+				ValidAudience = config["Jwt:Audience"],
+				IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Jwt:Key"]))
+			};
 		}
 
 

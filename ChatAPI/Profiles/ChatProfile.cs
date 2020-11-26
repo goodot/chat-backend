@@ -19,6 +19,7 @@ namespace ChatAPI.Profiles
             CreateMap<Message, MessageDto>().ReverseMap();
             CreateMap<SendMessageRequest, Message>();
             CreateMap<SocketRequest, Message>().ReverseMap();
+            CreateMap<SocketMessage, SocketRequest>().ReverseMap();
 
         }
     }

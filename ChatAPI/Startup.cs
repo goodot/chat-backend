@@ -7,6 +7,7 @@ using ChatAPI.Domain.Repository.Interfaces;
 using ChatAPI.Extensions;
 using ChatAPI.Middleware.Extension;
 using ChatAPI.Models;
+using ChatAPI.WebSockets;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -36,6 +37,7 @@ namespace ChatAPI
             services.ConfigureSwagger();
             var connectionString = Configuration.GetConnectionString("ChatDb");
             Console.WriteLine($"Connection String: ({connectionString})");
+
             services.AddDbContext<ChatDbContext>(opt =>
             {
                 opt.UseSqlServer(connectionString);
