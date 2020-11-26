@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ChatAPI.Domain.Repository.Interfaces
 {
-    public  interface IUserRepository
+    public  interface IUserRepository:IRepository<User>
     {
         IEnumerable<User> GetByRoom(int roomId);
     }

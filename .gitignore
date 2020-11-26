@@ -358,3 +358,23 @@ MigrationBackup/
 .ionide/
 
 # End of https://www.toptal.com/developers/gitignore/api/visualstudio
+
+.idea/.idea.ChatAPI/.idea/.name
+
+.idea/.idea.ChatAPI/.idea/codeStyles/codeStyleConfig.xml
+
+.idea/.idea.ChatAPI/.idea/contentModel.xml
+
+.idea/.idea.ChatAPI/.idea/encodings.xml
+
+.idea/.idea.ChatAPI/.idea/indexLayout.xml
+
+.idea/.idea.ChatAPI/.idea/modules.xml
+
+.idea/.idea.ChatAPI/.idea/projectSettingsUpdater.xml
+
+.idea/.idea.ChatAPI/.idea/vcs.xml
+
+.idea/.idea.ChatAPI/.idea/workspace.xml
+
+.idea/.idea.ChatAPI/riderModule.iml

@@ -21,12 +21,12 @@ namespace ChatAPI.Controllers
     [ApiController]
     public class RoomController : ControllerBase
     {
-        private readonly UnitOfWork _unitOfWork;
+        private readonly IUnitOfWork _unitOfWork;
         private IMapper _mapper;
         private IConfiguration _config;
         public RoomController(IUnitOfWork unitOfWork, IMapper mapper, IConfiguration config)
         {
-            _unitOfWork = unitOfWork as UnitOfWork;
+            _unitOfWork = unitOfWork;
             _mapper = mapper;
             _config = config;
         }
@@ -38,9 +38,9 @@ namespace ChatAPI.Controllers
             {
                 Username = request.Username
             };
-            _unitOfWork.UserRepository.Add(user);
-
+            await _unitOfWork.UserRepository.AddAsync(user);
             await _unitOfWork.CommitAsync();
+            
             var token = user.GenerateToken(
                 key: _config["Jwt:Key"],
                 issuer: _config["Jwt:Issuer"],

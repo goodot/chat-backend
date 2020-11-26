@@ -19,9 +19,15 @@ namespace ChatAPI.Domain
             MessageRepository = new MessageRepository(_dbContext);
             RoomRepository = new RoomRepository(_dbContext);
         }
-        public MessageRepository MessageRepository;
-        public UserRepository UserRepository;
-        public RoomRepository RoomRepository;
+
+        public UnitOfWork(IUserRepository userRepository, IRoomRepository roomRepository)
+        {
+            UserRepository = userRepository;
+            RoomRepository = roomRepository;
+        }
+        public MessageRepository MessageRepository { get; }
+        public IUserRepository UserRepository { get; }
+        public IRoomRepository RoomRepository { get; }
         public void Commit()
         {
             _dbContext.SaveChanges();

@@ -7,6 +7,8 @@ namespace ChatAPI.Domain.Repository.Interfaces
 {
     public interface IUnitOfWork:IDisposable
     {
+        IUserRepository UserRepository { get; }
+        IRoomRepository RoomRepository { get; }
         void Commit();
         Task CommitAsync();
     }
