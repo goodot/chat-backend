@@ -77,5 +77,56 @@ namespace ChatAPI.Tests
 
             Assert.That(result, Is.TypeOf<NotFoundResult>());
         }
+
+        [Test]
+        public async Task GetRoomById_WrongId_ReturnsNotFound()
+        {
+            _unitOfWork.Setup(u => u.RoomRepository.GetByIdAsync(1)).ReturnsAsync((Room) null);
+
+            var result = await _controller.GetRoomById(1);
+
+            Assert.That(result.Result, Is.TypeOf<NotFoundResult>());
+        }
+
+        [Test]
+        public async Task GetRoomById_CorrectId_ReturnsRoom()
+        {
+            var room = new Room {Id = 1};
+            var roomDto = new RoomDto {Id = 1};
+        
+            _unitOfWork.Setup(u => u.RoomRepository.GetByIdAsync(1)).ReturnsAsync(room);
+            _mapper.Setup(u => u.Map<RoomDto>(room)).Returns(roomDto);
+
+            var result = await _controller.GetRoomById(1);
+            var response = (OkObjectResult) result.Result;
+            Assert.That(response.Value, Is.EqualTo(roomDto));
+        }
+        [Test]
+        public async Task GetRoomByIdentity_WrongId_ReturnsNotFound()
+        {
+            const string identity = "identity";
+            _unitOfWork.Setup(u => u.RoomRepository.GetByIdentityAsync(identity)).ReturnsAsync((Room) null);
+
+            var result = await _controller.GetRoomByIdentity(identity);
+
+            Assert.That(result.Result, Is.TypeOf<NotFoundResult>());
+        }
+
+        [Test]
+        public async Task GetRoomByIdentity_CorrectId_ReturnsRoom()
+        {
+            var room = new Room {Id = 1};
+            var roomDto = new RoomDto {Id = 1};
+            const string identity = "identity";
+            
+            _unitOfWork.Setup(u => u.RoomRepository.GetByIdentityAsync(identity)).ReturnsAsync(room);
+            _mapper.Setup(u => u.Map<RoomDto>(room)).Returns(roomDto);
+
+            var result = await _controller.GetRoomByIdentity(identity);
+            var response = (OkObjectResult) result.Result;
+            Assert.That(response.Value, Is.EqualTo(roomDto));
+        }
+        
+        
     }
 }

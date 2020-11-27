@@ -75,7 +75,8 @@ namespace ChatAPI.Controllers
             var room = await _unitOfWork.RoomRepository.GetByIdAsync(id);
             if (room == null)
                 return NotFound();
-            return Ok(_mapper.Map<RoomDto>(room));
+            var roomDto = _mapper.Map<RoomDto>(room);
+            return Ok(roomDto);
 
         }
         //GET api/v1/room/identity
@@ -86,7 +87,7 @@ namespace ChatAPI.Controllers
             var room = await _unitOfWork.RoomRepository.GetByIdentityAsync(identity);
             if (room == null)
                 return NotFound();
-            return Ok(room);
+            return Ok(_mapper.Map<RoomDto>(room));
 
         }
         //DELETE api/v1/room
