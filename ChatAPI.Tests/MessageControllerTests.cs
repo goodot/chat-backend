@@ -1,19 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using ChatAPI.Controllers;
 using ChatAPI.Data.Models;
 using ChatAPI.Domain.Repository.Interfaces;
-using ChatAPI.Extensions;
 using ChatAPI.Models.Dto.Request;
 using ChatAPI.Models.Dto.Response;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.JsonWebTokens;
 using Moq;
 using NUnit.Framework;
 
