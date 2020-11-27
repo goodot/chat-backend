@@ -20,12 +20,12 @@ namespace ChatAPI.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly UnitOfWork _unitOfWork;
+        private readonly IUnitOfWork _unitOfWork;
         private IMapper _mapper;
         private IConfiguration _config;
         public UserController(IUnitOfWork unitOfWork, IMapper mapper, IConfiguration config)
         {
-            _unitOfWork = unitOfWork as UnitOfWork;
+            _unitOfWork = unitOfWork;
             _mapper = mapper;
             _config = config;
         }
