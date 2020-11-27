@@ -21,26 +21,30 @@ namespace ChatAPI.Controllers
     [ApiController]
     public class MessageController : ControllerBase
     {
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
+        private readonly int _userId;
 
-        private readonly UnitOfWork _unitOfWork;
-        private IMapper _mapper;
-        private IConfiguration _config;
-        private int _userId;
-        public MessageController(IUnitOfWork unitOfWork, IMapper mapper, IConfiguration config, IHttpContextAccessor contextAccessor)
+        public MessageController(IUnitOfWork unitOfWork, IMapper mapper, IHttpContextAccessor contextAccessor,
+            int? userId = null)
         {
-            _unitOfWork = unitOfWork as UnitOfWork;
+            _unitOfWork = unitOfWork;
             _mapper = mapper;
-            _config = config;
-            _userId = contextAccessor.HttpContext.User.Identity.ExtractUserId();
+            _userId = userId ?? contextAccessor.HttpContext.User.Identity.ExtractUserId();
         }
+
+
         //GET api/v1/message/{id}
         [HttpGet("{id}", Name = nameof(GetMessageById))]
         public async Task<ActionResult<MessageDto>> GetMessageById(int id)
         {
             var message = await _unitOfWork.MessageRepository.GetByIdAsync(id);
+            if (message == null)
+                return NotFound();
             var messageDto = _mapper.Map<MessageDto>(message);
             return Ok(messageDto);
         }
+
         //POST api/v1/message/send
         [HttpPost("send")]
         public async Task<ActionResult<MessageDto>> SendMessage(SendMessageRequest request)
@@ -50,9 +54,9 @@ namespace ChatAPI.Controllers
             await _unitOfWork.MessageRepository.SendAsync(message);
             await _unitOfWork.CommitAsync();
             var messageDto = _mapper.Map<MessageDto>(message);
-            return CreatedAtRoute(nameof(GetMessageById), new { Id = message.Id }, messageDto);
-
+            return CreatedAtRoute(nameof(GetMessageById), new {Id = message.Id}, messageDto);
         }
+
         //GET api/v1/message/
         [HttpGet("{roomId}/{page}/{pageSize}")]
         public ActionResult<List<MessageDto>> GetMessages(int roomId, int page, int pageSize)
@@ -61,6 +65,7 @@ namespace ChatAPI.Controllers
             var messageDtos = _mapper.Map<IEnumerable<MessageDto>>(messages);
             return Ok(messageDtos);
         }
+
         //GET api/v1/message/all/
         [HttpGet("all/{roomId}")]
         public ActionResult<IEnumerable<MessageDto>> GetMessagesByRoom(int roomId)

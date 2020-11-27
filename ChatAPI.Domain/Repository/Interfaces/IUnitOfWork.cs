@@ -9,6 +9,7 @@ namespace ChatAPI.Domain.Repository.Interfaces
     {
         IUserRepository UserRepository { get; }
         IRoomRepository RoomRepository { get; }
+        IMessageRepository MessageRepository { get; }
         void Commit();
         Task CommitAsync();
     }

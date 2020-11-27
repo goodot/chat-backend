@@ -26,7 +26,12 @@ namespace ChatAPI.Domain
             UserRepository = userRepository;
             RoomRepository = roomRepository;
         }
-        public MessageRepository MessageRepository { get; }
+
+        public UnitOfWork(IMessageRepository messageRepository)
+        {
+            MessageRepository = messageRepository;
+        }
+        public IMessageRepository MessageRepository { get; }
         public IUserRepository UserRepository { get; }
         public IRoomRepository RoomRepository { get; }
         public SocketRepository SocketRepository { get; }
