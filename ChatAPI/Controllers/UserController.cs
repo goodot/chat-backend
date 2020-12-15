@@ -38,12 +38,7 @@ namespace ChatAPI.Controllers
 
             if (room == null)
                 return NotFound("Room not found");
-
-            ////check if username is unique in the room
-            //var userExists = _unitOfWork.UserRepository.GetByRoom(room.Id).Any(x => x.Username == request.Username);
-            //if (userExists)
-            //    return Conflict("user with this username already exists in the room");
-
+            
             var user = new User
             {
                 Username = request.Username,
@@ -77,11 +72,15 @@ namespace ChatAPI.Controllers
         //GET api/v1/user/by-room
         [Authorize]
         [HttpGet("by-room/{roomId}")]
-        public ActionResult<List<UserDto>> GetUsersByRoom(int roomId)
+        public async Task<ActionResult<List<UserDto>>> GetUsersByRoom(int roomId)
         {
-            var users = _unitOfWork.UserRepository.GetByRoom(roomId);
-            var userDtos = _mapper.Map<List<UserDto>>(users);
-            return Ok(userDtos);
+                var room = await _unitOfWork.RoomRepository.GetByIdAsync(roomId);
+                if (room == null)
+                    return NotFound();
+                var users = _unitOfWork.UserRepository.GetByRoom(roomId);
+                var userDtos = _mapper.Map<List<UserDto>>(users);
+                return Ok(userDtos);
+            
         }
 
     }

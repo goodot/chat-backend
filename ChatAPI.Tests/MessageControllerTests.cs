@@ -74,7 +74,7 @@ namespace ChatAPI.Tests
         }
 
         [Test]
-        public void GetMessages_WhenCalled_ReturnsMessageList()
+        public async Task GetMessages_WhenCalled_ReturnsMessageList()
         {
             _unitOfWork.Setup(u => u.MessageRepository.GetPaged(1, 1, 1))
                 .Returns(new List<Message>
@@ -93,7 +93,7 @@ namespace ChatAPI.Tests
                     }
                 });
 
-            var result = _controller.GetMessages(1, 1, 1);
+            var result = await _controller.GetMessages(1, 1, 1);
 
             Assert.That(result.Result, Is.TypeOf<OkObjectResult>());
             var okObjectResult = (OkObjectResult) result.Result;
@@ -102,7 +102,7 @@ namespace ChatAPI.Tests
         }
 
         [Test]
-        public void GetMessagesByRoom_WhenCalled_ReturnRooms()
+        public async Task GetMessagesByRoom_WhenCalled_ReturnRooms()
         {
             _unitOfWork.Setup(u => u.MessageRepository.GetByRoom(1))
                 .Returns(new List<Message> {new Message {Id = 1}});
@@ -117,7 +117,7 @@ namespace ChatAPI.Tests
                     }
                 );
 
-            var result = _controller.GetMessagesByRoom(1);
+            var result = await _controller.GetMessagesByRoom(1);
 
             Assert.That(result.Result, Is.TypeOf<OkObjectResult>());
 
