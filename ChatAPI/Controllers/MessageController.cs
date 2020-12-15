@@ -59,20 +59,27 @@ namespace ChatAPI.Controllers
 
         //GET api/v1/message/
         [HttpGet("{roomId}/{page}/{pageSize}")]
-        public ActionResult<List<MessageDto>> GetMessages(int roomId, int page, int pageSize)
+        public async Task<ActionResult<List<MessageDto>>> GetMessages(int roomId, int page, int pageSize)
         {
-            var messages = _unitOfWork.MessageRepository.GetPaged(roomId, page, pageSize);
-            var messageDtos = _mapper.Map<IEnumerable<MessageDto>>(messages);
-            return Ok(messageDtos);
+            return await Task.Factory.StartNew<ActionResult<List<MessageDto>>>(() =>
+            {
+                var messages = _unitOfWork.MessageRepository.GetPaged(roomId, page, pageSize);
+                var messageDtos = _mapper.Map<IEnumerable<MessageDto>>(messages);
+                return Ok(messageDtos);
+            });
+            
         }
 
         //GET api/v1/message/all/
         [HttpGet("all/{roomId}")]
-        public ActionResult<IEnumerable<MessageDto>> GetMessagesByRoom(int roomId)
+        public async Task<ActionResult<IEnumerable<MessageDto>>> GetMessagesByRoom(int roomId)
         {
-            var messages = _unitOfWork.MessageRepository.GetByRoom(roomId);
-            var messagesDto = _mapper.Map<IEnumerable<MessageDto>>(messages);
-            return Ok(messagesDto);
+            return await Task.Factory.StartNew<ActionResult<IEnumerable<MessageDto>>>(() =>
+            {
+                var messages = _unitOfWork.MessageRepository.GetByRoom(roomId);
+                var messagesDto = _mapper.Map<IEnumerable<MessageDto>>(messages);
+                return Ok(messagesDto);
+            });
         }
     }
 }
